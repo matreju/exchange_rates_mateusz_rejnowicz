@@ -21,9 +21,9 @@ class AuthController extends Controller
         }
     
         $user = User::where('email', $request->email)->first();
-        $token = $user->createToken('api_token')->plainTextToken;
-    
-        return response()->json(['api_token' => $token]);
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json(['token' => $token]);
     }
 
     public function register(Request $request)
@@ -32,12 +32,14 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users|max:255',
             'password' => 'required|string|min:6|max:255',
+            'role' => 'required|in:admin,user',
         ]);
     
         $user = new User;
         $user->name = $validatedData['name'];
         $user->email = $validatedData['email'];
         $user->password = bcrypt($validatedData['password']);
+        $user->role = $validatedData['role'];
         $user->save();
     
         $token = $user->createToken('authToken')->plainTextToken;

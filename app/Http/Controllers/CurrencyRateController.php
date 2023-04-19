@@ -8,11 +8,18 @@ use App\Models\CurrencyRate;
 
 class CurrencyRateController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only(['index', 'store']);
+    }
     /**
      * Wyszukiwanie po walucie, dacie oraz walucie i dacie
      */
     public function index(Request $request)
     {
+        $this->authorizeRoles(['admin']);
+
         $currency = $request->input('currency');
         $date = $request->input('date');
     
@@ -45,6 +52,8 @@ class CurrencyRateController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorizeRoles(['admin']);
+
         $validatedData = $request->validate([
             'currency' => 'required|in:EUR,USD,GBP',
             'date' => 'required|date_format:Y-m-d',
@@ -86,5 +95,10 @@ class CurrencyRateController extends Controller
         return response()->json($response);
     }
 
-
+    private function authorizeRoles($roles)
+    {
+        if (auth()->check() && !in_array(auth()->user()->role, $roles)) {
+            abort(403, 'Brak autoryzacji do wykonania tej akcji');
+        }
+    }
 }
