@@ -15,7 +15,9 @@ Po zalogowaniu otrzymasz token
 Poruszanie sie po bazie:
 
 currency|'EUR,GBP,USD'  =>EUR
+
 date|'format:Y-m-d'     =>2023-12-12  
+
 amount|numeric          =>4.22
 
 Nazwa bazy danych: exchange_rates
